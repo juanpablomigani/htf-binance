@@ -45,7 +45,7 @@ def handle_depth_message(msg):
 def start_streaming():
     twm = ThreadedWebsocketManager(api_key=api_key, api_secret=api_secret)
     twm.start()
-    twm.start_depth_socket(callback=handle_depth_message, symbol='USDTARS')
+    twm.start_depth_socket(callback=handle_depth_message, symbol='BTCUSDT')
 
     try:
         logging.info("Streaming iniciado...")
