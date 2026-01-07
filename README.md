@@ -2,7 +2,7 @@
 
 Sistema de trading de alta frecuencia desarrollado como proyecto de diplomatura. Incluye un dashboard en tiempo real, ingesta de datos de mercado desde Binance y un motor de trading automatizado que utiliza estrategias basadas en VWAP y momentum.
 
-## 📋 Tabla de Contenidos
+## Tabla de Contenidos
 
 - [Características](#-características)
 - [Arquitectura](#-arquitectura)
@@ -15,7 +15,7 @@ Sistema de trading de alta frecuencia desarrollado como proyecto de diplomatura.
 - [Dashboard](#-dashboard)
 - [Notas Importantes](#-notas-importantes)
 
-## ✨ Características
+## Características
 
 - **Streaming en tiempo real**: Consumo del order book de Binance mediante WebSocket
 - **Almacenamiento en MotherDuck**: Persistencia de datos de mercado en DuckDB cloud
@@ -24,7 +24,7 @@ Sistema de trading de alta frecuencia desarrollado como proyecto de diplomatura.
 - **Modo simulado**: Permite probar estrategias sin riesgo antes de operar en real
 - **Gestión de posiciones**: Sistema completo de Take Profit y Stop Loss
 
-## 🏗️ Arquitectura
+## Arquitectura
 
 El sistema está compuesto por tres módulos principales que funcionan de forma independiente:
 
@@ -61,14 +61,14 @@ El sistema está compuesto por tres módulos principales que funcionan de forma 
    - Calcula métricas en tiempo real
    - Sirve el frontend HTML/JavaScript
 
-## 📦 Requisitos
+## Requisitos
 
 - **Python 3.10+**
 - **Token de MotherDuck**: Necesario para almacenar y consultar datos
 - **Claves de API de Binance** (opcional): Solo si deseas operar en modo real
 - **Conexión a Internet**: Para WebSocket de Binance y MotherDuck
 
-## 🚀 Instalación
+## Instalación
 
 ### 1. Clonar o descargar el proyecto
 
@@ -108,7 +108,7 @@ cp env.example .env
 
 Edita el archivo `.env` y completa los valores necesarios (ver sección [Configuración](#-configuración)).
 
-## ⚙️ Configuración
+## Configuración
 
 Copia `env.example` a `.env` y configura las siguientes variables:
 
@@ -144,7 +144,7 @@ SLEEP_TIME=5                 # Segundos entre iteraciones del trader
 3. Genera un token desde el panel de control
 4. Copia el token en tu archivo `.env`
 
-## 🎮 Uso
+## Uso
 
 El sistema requiere ejecutar tres procesos simultáneamente (en terminales separadas):
 
@@ -186,7 +186,7 @@ Este proceso:
 
 Abre tu navegador en `http://localhost:5000` para ver el dashboard.
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 htf-binance/
@@ -200,7 +200,7 @@ htf-binance/
     └── index.html         # Dashboard frontend (Plotly + jQuery)
 ```
 
-## 📊 Estrategia de Trading
+## Estrategia de Trading
 
 ### Señales de Entrada
 
@@ -230,7 +230,7 @@ El sistema calcula:
 - **R Esperado**: Ratio entre ganancia potencial y pérdida potencial
 - **R Final**: Ratio real obtenido al cerrar la posición
 
-## 📈 Dashboard
+## Dashboard
 
 El dashboard muestra:
 
@@ -276,21 +276,13 @@ Esto es intencional para mantener las tablas limpias entre sesiones.
 - El trader evalúa señales cada `SLEEP_TIME` segundos (por defecto 5)
 - El stream procesa cada actualización del WebSocket en tiempo real
 
-## 🔧 Dependencias
+## Dependencias
 
 - `Flask`: Framework web para el dashboard
 - `python-dotenv`: Gestión de variables de entorno
 - `duckdb`: Cliente para MotherDuck
 - `python-binance`: Cliente para API de Binance
 
-## 📝 Licencia
-
-Este proyecto es parte de un trabajo de diplomatura.
-
-## 🤝 Contribuciones
+## Contribuciones
 
 Este es un proyecto académico. Las contribuciones son bienvenidas, pero ten en cuenta el contexto educativo del proyecto.
-
----
-
-**Desarrollado como proyecto de diplomatura en High Frequency Trading**
