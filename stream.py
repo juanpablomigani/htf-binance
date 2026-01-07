@@ -28,6 +28,52 @@ def connect_to_motherduck():
 conn = connect_to_motherduck()
 
 # ──────────────────────────────────────────────────────────────
+# Manejador del stream de Binance
+# ──────────────────────────────────────────────────────────────
+def handle_depth_message(msg):
+    try:
+        event_time = msg['E']
+        bids = msg['b']
+        asks = msg['a']
+        send_to_motherduck(bids, asks, event_time)
+    except KeyError as e:
+        logging.error(f"Error en el mensaje de profundidad: {e}")
+
+# ──────────────────────────────────────────────────────────────
+# Inicio del streaming
+# ──────────────────────────────────────────────────────────────
+def start_streaming():
+    twm = ThreadedWebsocketManager(api_key=api_key, api_secret=api_secret)
+    twm.start()
+    twm.start_depth_socket(callback=handle_depth_message, symbol='USDTARS')
+
+    try:
+        logging.info("Streaming iniciado...")
+        signal.pause()
+    except Exception as e:
+        logging.error(f"Error en WebSocket: {e}")
+    finally:
+        twm.stop()
+        logging.info("Streaming detenido.")
+
+# ──────────────────────────────────────────────────────────────
+# Inserción de datos en MotherDuck
+# ──────────────────────────────────────────────────────────────
+def send_to_motherduck(bids, asks, event_time):
+    try:
+        if bids and asks:
+            bid_price, bid_quantity = float(bids[0][0]), float(bids[0][1])
+            ask_price, ask_quantity = float(asks[0][0]), float(asks[0][1])
+            query = """
+                INSERT INTO htf.depth_updates (E, bid_price, bid_quantity, ask_price, ask_quantity)
+                VALUES (?, ?, ?, ?, ?)
+            """
+            conn.execute(query, [event_time, bid_price, bid_quantity, ask_price, ask_quantity])
+            logging.info("Datos enviados a MotherDuck.")
+    except Exception as e:
+        logging.error(f"Error al enviar datos a MotherDuck: {e}")
+ 
+# ──────────────────────────────────────────────────────────────
 # Manejo de cierre limpio y borrado de datos
 # ──────────────────────────────────────────────────────────────
 def clear_database():
@@ -47,52 +93,6 @@ def signal_handler(sig, frame):
 
 signal.signal(signal.SIGINT, signal_handler)
 signal.signal(signal.SIGTERM, signal_handler)
-
-# ──────────────────────────────────────────────────────────────
-# Inserción de datos en MotherDuck
-# ──────────────────────────────────────────────────────────────
-def send_to_motherduck(bids, asks, event_time):
-    try:
-        if bids and asks:
-            bid_price, bid_quantity = float(bids[0][0]), float(bids[0][1])
-            ask_price, ask_quantity = float(asks[0][0]), float(asks[0][1])
-            query = """
-                INSERT INTO htf.depth_updates (E, bid_price, bid_quantity, ask_price, ask_quantity)
-                VALUES (?, ?, ?, ?, ?)
-            """
-            conn.execute(query, [event_time, bid_price, bid_quantity, ask_price, ask_quantity])
-            logging.info("Datos enviados a MotherDuck.")
-    except Exception as e:
-        logging.error(f"Error al enviar datos a MotherDuck: {e}")
-
-# ──────────────────────────────────────────────────────────────
-# Manejador del stream de Binance
-# ──────────────────────────────────────────────────────────────
-def handle_depth_message(msg):
-    try:
-        event_time = msg['E']
-        bids = msg['b']
-        asks = msg['a']
-        send_to_motherduck(bids, asks, event_time)
-    except KeyError as e:
-        logging.error(f"Error en el mensaje de profundidad: {e}")
-
-# ──────────────────────────────────────────────────────────────
-# ▶Inicio del streaming
-# ──────────────────────────────────────────────────────────────
-def start_streaming():
-    twm = ThreadedWebsocketManager(api_key=api_key, api_secret=api_secret)
-    twm.start()
-    twm.start_depth_socket(callback=handle_depth_message, symbol='BTCUSDT')
-
-    try:
-        logging.info("Streaming iniciado...")
-        signal.pause()
-    except Exception as e:
-        logging.error(f"Error en WebSocket: {e}")
-    finally:
-        twm.stop()
-        logging.info("Streaming detenido.")
 
 # ──────────────────────────────────────────────────────────────
 # Punto de entrada
